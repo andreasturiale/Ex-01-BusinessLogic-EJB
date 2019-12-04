@@ -37,7 +37,7 @@
 	%>
 
 
-	<h1>Elenco Ordini Effettuati</h1>
+	<h1>Elenco ordini effettuati</h1>
 
     <%
         for (Purchase purchase : purchases){
@@ -49,7 +49,7 @@
 					<tr>
 						<th style="width: 25%">Descrizione</th>
 						<th style="width: 25%">Codice</th>
-                        <th style="width: 25%">Price</th>
+                        <th style="width: 25%">Prezzo</th>
                         <th style="width: 25%"></th>
 					</tr>
 					<% 
