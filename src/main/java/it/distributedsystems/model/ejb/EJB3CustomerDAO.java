@@ -12,6 +12,7 @@ import java.util.List;
 
 @Stateless
 @Local(CustomerDAO.class)
+@Interceptors(JmsLogProducer.class)
 //@Remote(CustomerDAO.class) //-> TODO: serve nella versione clustering???
 public class EJB3CustomerDAO implements CustomerDAO {
 
@@ -19,7 +20,6 @@ public class EJB3CustomerDAO implements CustomerDAO {
     EntityManager em;
 
     @Override
-//    @Interceptors(OperationLogger.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int insertCustomer(Customer customer) {
         em.persist(customer);

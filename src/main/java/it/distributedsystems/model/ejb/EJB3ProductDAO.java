@@ -3,12 +3,10 @@ package it.distributedsystems.model.ejb;
 //import it.distributedsystems.model.logging.OperationLogger;
 import it.distributedsystems.model.dao.*;
 
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -22,6 +20,7 @@ import org.hibernate.Hibernate;
 
 @Stateless
 @Local(ProductDAO.class)
+@Interceptors(JmsLogProducer.class)
 //@Remote(ProductDAO.class)  //-> TODO: serve nella versione clustering???
 public class EJB3ProductDAO implements ProductDAO {
 
@@ -30,7 +29,6 @@ public class EJB3ProductDAO implements ProductDAO {
 
 
     @Override
-    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int insertProduct(Product product) {
         product.setProducer(em.merge(product.getProducer()));

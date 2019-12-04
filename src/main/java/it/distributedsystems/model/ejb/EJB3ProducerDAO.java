@@ -1,8 +1,6 @@
 package it.distributedsystems.model.ejb;
 
 //import it.distributedsystems.model.logging.OperationLogger;
-import it.distributedsystems.model.dao.Customer;
-import it.distributedsystems.model.dao.CustomerDAO;
 import it.distributedsystems.model.dao.Producer;
 import it.distributedsystems.model.dao.ProducerDAO;
 
@@ -14,6 +12,7 @@ import java.util.List;
 
 @Stateless
 @Local(ProducerDAO.class)
+@Interceptors(JmsLogProducer.class)
 //@Remote(CustomerDAO.class) //-> TODO: serve nella versione clustering???
 public class EJB3ProducerDAO implements ProducerDAO {
 
@@ -21,7 +20,6 @@ public class EJB3ProducerDAO implements ProducerDAO {
     EntityManager em;
 
     @Override
-//    @Interceptors(OperationLogger.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int insertProducer(Producer producer) {
         em.persist(producer);

@@ -25,6 +25,7 @@ import org.hibernate.Hibernate;
 
 @Stateless
 @Local(PurchaseDAO.class)
+@Interceptors(JmsLogProducer.class)
 //@Remote(PurchaseDAO.class)  //-> TODO: serve nella versione clustering???
  public class EJB3PurchaseDAO implements PurchaseDAO {
 
