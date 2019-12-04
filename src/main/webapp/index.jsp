@@ -133,7 +133,7 @@
 				while ( iterator.hasNext() ) {
 					Producer producer = (Producer) iterator.next();
 			%>
-			<option value="<%= producer.getId() %>"><%= producer.getName()%></option>
+			<option value="<%= producer.getName() %>"><%= producer.getName()%></option>
 			<%
 				}// end while
 			%>
