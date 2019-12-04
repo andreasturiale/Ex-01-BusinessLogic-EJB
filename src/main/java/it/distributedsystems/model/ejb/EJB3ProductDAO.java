@@ -16,6 +16,8 @@ import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.Hibernate;
+
 
 
 @Stateless
@@ -28,10 +30,10 @@ public class EJB3ProductDAO implements ProductDAO {
 
 
     @Override
-//    @Interceptors(OperationLogger.class)
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int insertProduct(Product product) {
-
+        product.setProducer(em.merge(product.getProducer()));
         em.persist(product);
         return product.getId();
     }
@@ -83,13 +85,18 @@ public class EJB3ProductDAO implements ProductDAO {
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Product findProductById(int id) {
-        return em.find(Product.class, id);
+        Product product= em.find(Product.class, id);
+        Hibernate.initialize(product.getProducer());
+        return product;
     }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<Product> getAllProducts() {
-        return em.createQuery("from Product").getResultList();
+        List<Product> result= em.createQuery("from Product").getResultList();
+        for (Product product : result)
+           Hibernate.initialize(product.getProducer());
+        return result;
     }
 
     @Override
