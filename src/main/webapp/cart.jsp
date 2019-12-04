@@ -23,47 +23,52 @@
 	
 	<%
 		
-		Set<Product> cart=(Set<Product>)request.getAttribute("cart");
+	
 		DAOFactory daoFactory = DAOFactory.getDAOFactory( application.getInitParameter("dao") );
 		CustomerDAO customerDAO = daoFactory.getCustomerDAO();
 		PurchaseDAO purchaseDAO = daoFactory.getPurchaseDAO();
 		ProductDAO productDAO = daoFactory.getProductDAO();
 		ProducerDAO producerDAO = daoFactory.getProducerDAO();
-		
+		Set<Product> cart=(Set<Product>)request.getAttribute("cart");
         List<Product> products= productDAO.getAllProducts();
+		String customerName=(String) session.getAttribute("customerName");
 
 	%>
 
 
 	<h1>Acquista</h1>
 
-    <div id="left" style="float: left; width: 100%; border-right: 1px solid grey; border-right: 1px solid grey;  border-top: 1px solid grey;  border-left: 1px solid grey;  border-bottom: 1px solid grey ">
+    <div id="left" style="float: left;width: 100%; border-right: 1px solid grey; border-right: 1px solid grey;  border-top: 1px solid grey;  border-left: 1px solid grey;  border-bottom: 1px solid grey ">
 			
 			<p>Seleziona un prodotto dal catalogo:</p>
-			<table class="formdata">
+			<table class="formdata" style="width: 100%">
 					<tr>
-						<th style="width: 25%">Descrizione</th>
-						<th style="width: 25%">Codice</th>
-                        <th style="width: 25%">Produttore</th>
-                        <th style="width: 25%"></th>
+						<th style="width: 20%">Descrizione</th>
+						<th style="width: 20%">Codice</th>
+                        <th style="width: 20%">Produttore</th>
+                        <th style="width: 20%">Prezzo</th>
+						<th style="width: 20%"></th>
 					</tr>
 					<% 
 					for( Product product : products ){  
-						if (product.getPurchase()==null && (cart == null || !cart.contains(product))){							
+						if (product.getPurchase()==null){			
+							if (cart == null || !cart.contains(product)){				
 					%> 
 						<form action="cartServlet" method="post">
 							<tr>
-								<td style="width: 25%;text-align : center"><%= product.getName() %></td>
-                                <td style="width: 25%;text-align : center"><%= product.getProductNumber() %></td>
-								<td style="width: 25%;text-align : center"><%= product.getProducer().getName() %> </td>
-								<td style="width: 25%;text-align : center">
+								<td style="width: 20%;text-align : center"><%= product.getName() %></td>
+                                <td style="width: 20%;text-align : center"><%= product.getProductNumber() %></td>
+								<td style="width: 20%;text-align : center"><%= product.getProducer().getName() %> </td>
+								<td style="width: 20%;text-align : center"><%= product.getPrice() %></td>
+								<td style="width: 20%;text-align : center">
 									<input type="hidden" name="operation" value="insertProductToCart"/>
 									<input type="hidden" name="productId" value="<%= product.getId() %>"/>
-									<input type="submit" name="aggiungi" value="add to cart"/>
+									<input type="submit" name="submit" value="aggiungi"/>
 								</td>
 							</tr>
 						</form>
 					<% 
+								}
 							}
 						}
 					  %>
@@ -77,26 +82,34 @@
 		    </table>			
 	</div>
 	
-	 <div id="left" style="float: left; width: 100%; border-right: 1px solid grey; border-right: 1px solid grey;  border-top: 1px solid grey;  border-left: 1px solid grey;  border-bottom: 1px solid grey ">
+	 <div id="left" style="float: left;width: 100%; border-right: 1px solid grey; border-right: 1px solid grey;  border-top: 1px solid grey;  border-left: 1px solid grey;  border-bottom: 1px solid grey ">
 		
 			<p>Carello:</p>
 			<table class="formdata" style="width: 100%">
 					<tr>
-						<th style="width: 25%">Descrizione</th>
-						<th style="width: 25%">Codice</th>
-                        <th style="width: 25%">Produttore</th>
-                        <th style="width: 25%">Prezzo</th>
+						<th style="width: 20%">Descrizione</th>
+						<th style="width: 20%">Codice</th>
+                        <th style="width: 20%">Produttore</th>
+                        <th style="width: 20%">Prezzo</th>
+						<th style="width: 20%"></th>
 					</tr>
 					<% 
 					if (cart != null){
-						for( Product p : cart ){  
+						for( Product product : cart ){  
 					%> 
+						<form action="cartServlet" method="post">
 						<tr>
-							<td style="width: 25%;text-align : center"><%= p.getName() %></td>
-							<td style="width: 25%;text-align : center"><%= p.getProductNumber() %> </td>
-							<td style="width: 25%;text-align : center"><%= p.getProducer().getName() %></td>
-							<td style="width: 25%;text-align : center"><%= 12 %></td>
+							<td style="width: 20%;text-align : center"><%= product.getName() %></td>
+                                <td style="width: 20%;text-align : center"><%= product.getProductNumber() %></td>
+								<td style="width: 20%;text-align : center"><%= product.getProducer().getName() %> </td>
+								<td style="width: 20%;text-align : center"><%= product.getPrice() %></td>
+								<td style="width: 20%;text-align : center">
+									<input type="hidden" name="operation" value="deleteProductFromCart"/>
+									<input type="hidden" name="productId" value="<%= product.getId() %>"/>
+									<input type="submit" name="submit" value="elimina"/>
+								</td>
 						</tr>
+						</form>
 					<% 
 						} 
 					}
@@ -112,9 +125,18 @@
 					<div>
 						<p>Checkout</p>
 						<form action="cartServlet" method="post">
-							Inserisci il tuo nome: <input type="text" name="customerName" />
+							Inserisci il tuo nome:
+							<%
+								if (customerName != null){
+							%> 
+							<input type="text" name="customerName" placeholder="<%= customerName %>" />
+							<%
+								}else{
+							%>
+							<input type="text" name="customerName"/>
+							<%}%>
 							<input type="hidden" name="operation" value="persistCart"/>
-							<input type="submit" name="ordina" value="submit"/>
+							<input type="submit" name="submit" value="ordina"/>
 						</form>
 					</div>
 		</div>

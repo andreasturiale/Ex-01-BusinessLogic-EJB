@@ -3,6 +3,7 @@ package it.distributedsystems.web;
 import java.io.IOException;
 // import java.util.ArrayList;
 // import java.util.List;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -25,6 +26,7 @@ import it.distributedsystems.model.ejb.EJB3CartBean;
 @WebServlet(name = "CartServlet", urlPatterns = { "cartServlet" }, loadOnStartup = 1)
 public class CartServlet extends HttpServlet {
 
+    private static final long serialVersionUID = 1L;
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(true);
@@ -42,11 +44,13 @@ public class CartServlet extends HttpServlet {
         if (operation.equals("insertProductToCart")) {
             int productId = Integer.parseInt(request.getParameter("productId"));
             cartBeanLocal.addProduct(productId);
-        } else if (operation.equals("persistCart")) {
+        } else if (operation.equals("deleteProductFromCart")) {
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            cartBeanLocal.deleteProduct(productId);
+        }else if (operation.equals("persistCart")) {
             String customerName=request.getParameter("customerName");
             cartBeanLocal.persistPurchase(customerName);
             session.setAttribute("customerName", customerName);
-            request.setAttribute("succes", "success");
         }
         request.setAttribute("cart", cartBeanLocal.getCart());
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/cart.jsp");

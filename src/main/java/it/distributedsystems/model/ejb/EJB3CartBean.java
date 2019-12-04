@@ -3,6 +3,7 @@ package it.distributedsystems.model.ejb;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -25,7 +26,11 @@ import it.distributedsystems.model.dao.Purchase;
 @Local(CartBean.class)
 public class EJB3CartBean implements Serializable, CartBean {
 
-    private Purchase purchase=new Purchase();
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+    private Purchase purchase = new Purchase();
    
     @EJB
     private ProductDAO productDAO;
@@ -57,9 +62,16 @@ public class EJB3CartBean implements Serializable, CartBean {
         Customer customer=customerDAO.findCustomerByName(customerName);
         this.purchase.setCustomer(customer);
         purchaseDAO.insertPurchase(this.purchase);
-        //reset the states because you have finalized the purchase
+        //reset the state because you have finalized the purchase
         this.purchase = new Purchase();
         this.purchase.setProducts(new HashSet<Product>());
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+        Set<Product> products=purchase.getProducts();
+        products.remove(productDAO.findProductById(productId));
+        purchase.setProducts(products);
     }
     
 }
