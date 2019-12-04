@@ -55,7 +55,7 @@ public class Product implements Serializable {
     }
 
     @ManyToOne(
-            cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},
+            cascade = {CascadeType.MERGE,CascadeType.REFRESH},
             fetch = FetchType.LAZY
     )
     public Purchase getPurchase() {
@@ -67,7 +67,7 @@ public class Product implements Serializable {
     }
 
     @ManyToOne(
-            cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},
+            cascade = {CascadeType.PERSIST,CascadeType.REFRESH},
             fetch = FetchType.LAZY
     )
     public Producer getProducer() {
@@ -77,4 +77,12 @@ public class Product implements Serializable {
     public void setProducer(Producer producer) {
         this.producer = producer;
     }
+
+    @Override
+    public String toString() {
+        return "Product [name=" + name + ", price=" + price + ", producer=" + producer + ", productNumber="
+                + productNumber + ", purchase=" + purchase + "]";
+    }
+
+    
 }
