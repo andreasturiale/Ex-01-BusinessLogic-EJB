@@ -9,7 +9,7 @@ import it.distributedsystems.model.dao.Product;
  */
 public interface CartBean {
     public Set<Product> getCart();
-    public void addProduct(int productId);
+    public void addProduct(int productId,int quanity);
     public void deleteProduct(int productId);
     public void persistPurchase(String customerName);
 }

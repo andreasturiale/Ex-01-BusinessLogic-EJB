@@ -43,7 +43,8 @@ public class CartServlet extends HttpServlet {
         String operation = request.getParameter("operation");
         if (operation.equals("insertProductToCart")) {
             int productId = Integer.parseInt(request.getParameter("productId"));
-            cartBeanLocal.addProduct(productId);
+            int quantity = Integer.parseInt(request.getParameter("quantity"));
+            cartBeanLocal.addProduct(productId,quantity);
         } else if (operation.equals("deleteProductFromCart")) {
             int productId = Integer.parseInt(request.getParameter("productId"));
             cartBeanLocal.deleteProduct(productId);

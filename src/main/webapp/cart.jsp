@@ -43,24 +43,26 @@
 			<p>Seleziona un prodotto dal catalogo:</p>
 			<table class="formdata" style="width: 100%">
 					<tr>
-						<th style="width: 20%">Descrizione</th>
-						<th style="width: 20%">Codice</th>
-                        <th style="width: 20%">Produttore</th>
-                        <th style="width: 20%">Prezzo</th>
-						<th style="width: 20%"></th>
+						<th style="width: 18%">Descrizione</th>
+						<th style="width: 18%">Codice</th>
+                        <th style="width: 18%">Produttore</th>
+                        <th style="width: 18%">Prezzo</th>
+						<th style="width: 18%">Quantita</th>
+						<th style="width: 10%"></th>
 					</tr>
 					<% 
 					for( Product product : products ){  
-						if (product.getPurchase()==null){			
-							if (cart == null || !cart.contains(product)){				
+						
+							if (cart == null || (!cart.contains(product) && product.getQuantity() !=0)){				
 					%> 
 						<form action="cartServlet" method="post">
 							<tr>
-								<td style="width: 20%;text-align : center"><%= product.getName() %></td>
-                                <td style="width: 20%;text-align : center"><%= product.getProductNumber() %></td>
-								<td style="width: 20%;text-align : center"><%= product.getProducer().getName() %> </td>
-								<td style="width: 20%;text-align : center"><%= product.getPrice() %></td>
-								<td style="width: 20%;text-align : center">
+								<td style="width: 18%;text-align : center"><%= product.getName() %></td>
+                                <td style="width: 18%;text-align : center"><%= product.getProductNumber() %></td>
+								<td style="width: 18%;text-align : center"><%= product.getProducer().getName() %> </td>
+								<td style="width: 18%;text-align : center"><%= product.getPrice() %></td>
+								<td style="width: 18%;text-align : center"><input type="text" name="quantity" placeholder="<%= product.getQuantity() %>" value="<%= product.getQuantity() %>" /></td>
+								<td style="width: 10%;text-align : center">
 									<input type="hidden" name="operation" value="insertProductToCart"/>
 									<input type="hidden" name="productId" value="<%= product.getId() %>"/>
 									<input type="submit" name="submit" value="aggiungi"/>
@@ -68,7 +70,7 @@
 							</tr>
 						</form>
 					<% 
-								}
+								
 							}
 						}
 					  %>
@@ -129,7 +131,7 @@
 							<%
 								if (customerName != null){
 							%> 
-							<input type="text" name="customerName" placeholder="<%= customerName %>" />
+							<input type="text" name="customerName" placeholder="<%= customerName %>" value="<%= customerName %>" />
 							<%
 								}else{
 							%>

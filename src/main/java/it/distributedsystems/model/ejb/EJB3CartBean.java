@@ -1,9 +1,9 @@
 package it.distributedsystems.model.ejb;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -30,7 +30,7 @@ public class EJB3CartBean implements Serializable, CartBean {
      *
      */
     private static final long serialVersionUID = 1L;
-    private Purchase purchase = new Purchase();
+    private Purchase purchase;
    
     @EJB
     private ProductDAO productDAO;
@@ -43,6 +43,7 @@ public class EJB3CartBean implements Serializable, CartBean {
     public void initialize() {
         purchase = new Purchase();
         purchase.setProducts(new HashSet<Product>());
+        purchase.setQuantities(new HashMap<>());
     }
 
     @Override
@@ -51,10 +52,15 @@ public class EJB3CartBean implements Serializable, CartBean {
     }
 
     @Override
-    public void addProduct(int productId) {
-        Set<Product> products=purchase.getProducts();
-        products.add(productDAO.findProductById(productId));
-        purchase.setProducts(products);
+    public void addProduct(int productId, int quantity) {
+        Product product=productDAO.findProductById(productId);
+        if (quantity <= product.getQuantity()){
+            Set<Product> products=purchase.getProducts();
+            product.setQuantity(product.getQuantity()-quantity);
+            products.add(product);
+            purchase.getQuantities().put(productId, quantity);
+            purchase.setProducts(products);
+        }
     }
 
     @Override
@@ -62,9 +68,10 @@ public class EJB3CartBean implements Serializable, CartBean {
         Customer customer=customerDAO.findCustomerByName(customerName);
         this.purchase.setCustomer(customer);
         purchaseDAO.insertPurchase(this.purchase);
-        //reset the state because you have finalized the purchase
+        //reset the state after you have finalized the purchase
         this.purchase = new Purchase();
         this.purchase.setProducts(new HashSet<Product>());
+        this.purchase.setQuantities(new HashMap<>());
     }
 
     @Override
@@ -72,6 +79,7 @@ public class EJB3CartBean implements Serializable, CartBean {
         Set<Product> products=purchase.getProducts();
         products.remove(productDAO.findProductById(productId));
         purchase.setProducts(products);
+        purchase.getQuantities().remove(productId);
     }
     
 }
