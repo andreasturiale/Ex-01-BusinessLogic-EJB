@@ -2,6 +2,7 @@ package it.distributedsystems.model.dao;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Set;
 
 @Entity
@@ -13,7 +14,7 @@ public class Purchase implements Serializable {
     protected int purchaseNumber;
     protected Customer customer;
     protected Set<Product> products;
-
+    protected HashMap<Integer,Integer> quantities;
     public Purchase() {}
 
     public Purchase(int purchaseNumber) { this.purchaseNumber = purchaseNumber; }
@@ -54,12 +55,24 @@ public class Purchase implements Serializable {
 
     public void setCustomer(Customer customer) { this.customer = customer; }
 
-    @OneToMany(
-            cascade={CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},
-            fetch=FetchType.LAZY,
-            mappedBy = "purchase"
+    @ManyToMany( 
+        cascade = {CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH},
+        fetch = FetchType.LAZY
     )
     public Set<Product> getProducts() { return products; }
 
     public void setProducts(Set<Product> products) { this.products = products; }
+
+    public HashMap<Integer, Integer> getQuantities() {
+        return quantities;
+    }
+
+    public void setQuantities(HashMap<Integer, Integer> quantities) {
+        this.quantities = quantities;
+    }
+
+    @Override
+    public String toString() {
+        return "Purchase [customer=" + customer + ", purchaseNumber=" + purchaseNumber + "]";
+    }
 }

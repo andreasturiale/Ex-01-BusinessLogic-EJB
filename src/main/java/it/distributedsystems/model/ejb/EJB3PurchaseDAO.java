@@ -25,14 +25,13 @@ import org.hibernate.Hibernate;
 
 @Stateless
 @Local(PurchaseDAO.class)
-@Interceptors(JmsLogProducer.class)
 //@Remote(PurchaseDAO.class)  //-> TODO: serve nella versione clustering???
  public class EJB3PurchaseDAO implements PurchaseDAO {
 
     @PersistenceContext(unitName = "distributed-systems-demo")
     EntityManager em;
 
-//    @Interceptors(OperationLogger.class)
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int insertPurchase(Purchase purchase) {
 
@@ -47,7 +46,7 @@ import org.hibernate.Hibernate;
             for (Product product : purchase.getProducts()){
                 if(product != null && product.getId() > 0){
                     Product productMerged=em.merge(product);
-                    productMerged.setPurchase(purchase);
+                    //productMerged.setPurchase(purchase);
                     products.add(productMerged);
                 }
             }
@@ -79,6 +78,7 @@ import org.hibernate.Hibernate;
     */
 
     @Override
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int removePurchaseById(int id){
         Purchase purchase = em.find(Purchase.class, id);
