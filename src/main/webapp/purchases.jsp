@@ -50,7 +50,7 @@
 						<th style="width: 25%">Descrizione</th>
 						<th style="width: 25%">Codice</th>
                         <th style="width: 25%">Prezzo</th>
-                        <th style="width: 25%"></th>
+                        <th style="width: 25%">Quantita</th>
 					</tr>
 					<% 
 					for( Product product : purchase.getProducts() ){  
@@ -61,7 +61,7 @@
 								<td style="width: 25%;text-align : center"><%= product.getName() %></td>
                                 <td style="width: 25%;text-align : center"><%= product.getProductNumber() %></td>
 								<td style="width: 25%;text-align : center"><%= product.getPrice() %> </td>
-								<td style="width: 25%;text-align : center"></td>
+								<td style="width: 25%;text-align : center"><%= purchase.getQuantities().get(product.getId()) %></td>
 							</tr>
 						
 					<% 
