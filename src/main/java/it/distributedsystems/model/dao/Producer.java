@@ -48,4 +48,9 @@ public class Producer implements Serializable {
     public void setProducts(Set<Product> products) {
         this.products = products;
     }
+
+    @Override
+    public String toString() {
+        return "Producer [name=" + name + "]";
+    }
 }
