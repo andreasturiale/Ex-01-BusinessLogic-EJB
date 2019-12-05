@@ -12,7 +12,6 @@ import java.util.List;
 
 @Stateless
 @Local(ProducerDAO.class)
-@Interceptors(JmsLogProducer.class)
 //@Remote(CustomerDAO.class) //-> TODO: serve nella versione clustering???
 public class EJB3ProducerDAO implements ProducerDAO {
 
@@ -20,6 +19,7 @@ public class EJB3ProducerDAO implements ProducerDAO {
     EntityManager em;
 
     @Override
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int insertProducer(Producer producer) {
         em.persist(producer);
@@ -27,6 +27,7 @@ public class EJB3ProducerDAO implements ProducerDAO {
     }
 
     @Override
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int removeProducerByName(String name) {
 

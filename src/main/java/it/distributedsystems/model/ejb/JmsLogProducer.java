@@ -17,10 +17,10 @@ import javax.jms.Session;
 @Stateless
 @Local(JmsLogProducerLocal.class)
 public class JmsLogProducer implements JmsLogProducerLocal {
-    @Resource(mappedName="java:/ConnectionFactory")    // inject ConnectionFactory (more)
+    @Resource(mappedName="java:/ConnectionFactory")    // inject ConnectionFactory 
     private ConnectionFactory factory;
   
-    @Resource(mappedName="java:/jms/queue/LogQueue")  // inject Queue (more)
+    @Resource(mappedName="java:/jms/queue/LogQueue")  // inject Queue 
     private Queue target;
    
     @AroundInvoke
@@ -29,7 +29,7 @@ public class JmsLogProducer implements JmsLogProducerLocal {
         try {
           Session session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
           MessageProducer producer= session.createProducer(target);
-          producer.send(session.createTextMessage(ctx.getMethod().getName()+" con i seguenti parametri: "+ctx.getMethod().getParameters().toString()));
+          producer.send(session.createTextMessage(ctx.getMethod().getName()+" con parametri: "+((Object)ctx.getParameters()[0]).toString()));
         }
         finally {
           con.close();

@@ -20,7 +20,6 @@ import org.hibernate.Hibernate;
 
 @Stateless
 @Local(ProductDAO.class)
-@Interceptors(JmsLogProducer.class)
 //@Remote(ProductDAO.class)  //-> TODO: serve nella versione clustering???
 public class EJB3ProductDAO implements ProductDAO {
 
@@ -29,6 +28,7 @@ public class EJB3ProductDAO implements ProductDAO {
 
 
     @Override
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int insertProduct(Product product) {
         product.setProducer(em.merge(product.getProducer()));
@@ -37,6 +37,7 @@ public class EJB3ProductDAO implements ProductDAO {
     }
 
     @Override
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int removeProductByNumber(int productNumber) {
 
@@ -57,6 +58,7 @@ public class EJB3ProductDAO implements ProductDAO {
     }
 
     @Override
+    @Interceptors(JmsLogProducer.class)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public int removeProductById(int id) {
         Product product = em.find(Product.class, id);
