@@ -79,6 +79,7 @@
 			product.setName( request.getParameter("name") );
 			product.setProductNumber(Integer.parseInt(request.getParameter("number")));
 			product.setPrice(Integer.parseInt(request.getParameter("price")));
+			product.setQuantity(Integer.parseInt(request.getParameter("quantity")));
 			Producer producer = producerDAO.findProducerByName(request.getParameter("producer"));
 			product.setProducer(producer);
 			int id = productDAO.insertProduct(product);
@@ -128,6 +129,7 @@
 			Name: <input type="text" name="name"/><br/>
 			Product Number: <input type="text" name="number"/><br/>
 			Price: <input type="text" name="price"/><br/>
+			Quantity: <input type="text" name="quantity"/><br/>
 			Producers: <select name="producer">
 			<%
 				Iterator iterator = producers.iterator();
